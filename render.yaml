@@ -11,5 +11,5 @@ services:
 
   - type: static
     name: resume-screening-frontend
-    buildCommand: "cd app/frontend_react && npm install && npm run build && echo 'Build completed, checking build directory...' && ls -la"
+    buildCommand: "cd app/frontend_react && npm install && npm run build"
     staticPublishPath: "app/frontend_react/build"
