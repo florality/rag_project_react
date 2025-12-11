@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: resume-screening-backend
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python main.py"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.15
+    domains:
+      - resume-screening-backend.onrender.com
+
+  - type: web
+    name: resume-screening-frontend
+    env: static
+    buildCommand: "cd app/frontend_react && npm install && npm run build"
+    staticPublishPath: "app/frontend_react/build"
+    domains:
+      - resume-screening-frontend.onrender.com
