@@ -8,13 +8,8 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.15
-    domains:
-      - resume-screening-backend.onrender.com
 
-  - type: web
+  - type: static
     name: resume-screening-frontend
-    env: static
     buildCommand: "cd app/frontend_react && npm install && npm run build"
     staticPublishPath: "app/frontend_react/build"
-    domains:
-      - resume-screening-frontend.onrender.com
