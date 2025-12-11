@@ -12,4 +12,4 @@ services:
   - type: static
     name: resume-screening-frontend
     buildCommand: "cd app/frontend_react && rm -rf node_modules package-lock.json && npm install && npm run build"
-    staticPublishPath: "build"
+    staticPublishPath: "build"  # 这是正确的配置
