@@ -9,7 +9,7 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.9
       - key: PORT
-        value: 8000  # 明确指定端口
+        value: 8000
 
   - type: static
     name: resume-screening-frontend
