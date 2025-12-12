@@ -99,6 +99,7 @@
   font-size: 16px;
   transition: border-color 0.2s, box-shadow 0.2s;
   background-color: #f9fafb;
+  box-sizing: border-box; /* 添加此行确保padding包含在宽度内 */
 }
 
 .form-control:focus {
@@ -111,6 +112,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  width: 100%; /* 添加此行确保容器占满父元素宽度 */
 }
 
 .slider {
@@ -149,6 +151,7 @@
   font-size: 16px;
   text-align: center;
   background-color: #f9fafb;
+  box-sizing: border-box; /* 添加此行确保padding包含在宽度内 */
 }
 
 .number-input:focus {
@@ -197,6 +200,7 @@
   font-size: 15px;
   resize: vertical;
   background-color: #f9fafb;
+  box-sizing: border-box; /* 添加此行确保padding包含在宽度内 */
 }
 
 .requirements-textarea:focus {

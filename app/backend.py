@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 from config import get_config
 from app.service import score_candidate, score_from_dataset  # 更新导入
 from app.port_utils import find_free_port
+from fastapi.middleware.cors import CORSMiddleware
 
 # 新增：导入 Gradio 并挂载
 # import gradio as gr  # 注释掉Gradio导入
@@ -46,9 +47,17 @@ def _write_port_file(port: int):
 def create_app() -> FastAPI:
     load_dotenv()
     cfg = get_config()
-    # 移除 root_path="/api"，避免影响Gradio挂载
     app = FastAPI(title="简历筛选助手 API", version="0.1.0")
-
+    
+    # 添加跨域支持
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],  # 在生产环境中应该指定具体的域名
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    
     # 新增：根路径重定向到前端
     @app.get("/")
     async def root():
