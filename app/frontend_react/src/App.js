@@ -36,16 +36,16 @@ function App() {
 
   return (
     <div className="App">
-      {/* 标题区域 */}
+      {/* 顶部：主标题+副标题 */}
       <header className="app-header">
         <h1 className="main-title">📄 智能简历筛选系统</h1>
         <p className="subtitle">输入岗位名称和要求，系统将自动为您筛选最匹配的候选人。</p>
       </header>
       
-      {/* 主要内容区域 - 双栏布局 */}
+      {/* 中部：左右分栏布局 */}
       <main className="app-main">
         <div className="content-row">
-          {/* 左侧：岗位信息区域 */}
+          {/* 左侧操作区 */}
           <div className="left-column">
             <div className="job-card">
               <h3 className="card-title">📋 岗位信息</h3>
@@ -53,7 +53,7 @@ function App() {
             </div>
           </div>
           
-          {/* 右侧：详细岗位要求区域 */}
+          {/* 右侧内容区 */}
           <div className="right-column">
             <div className="requirements-card">
               <h3 className="card-title">📝 详细岗位要求</h3>
@@ -61,18 +61,20 @@ function App() {
             </div>
           </div>
         </div>
-        
-        {/* 底部：筛选结果表格区域 */}
-        <div className="results-section">
-          <h3 className="section-title">📊 筛选结果</h3>
-          {error && (
-            <div className="error-message">
-              错误: {error}
-            </div>
-          )}
-          <ResultsTable results={results} loading={loading} />
-        </div>
       </main>
+      
+      {/* 底部：筛选结果区域 */}
+      <div className="results-section">
+        <div className="results-header">
+          <h3 className="section-title">📊 筛选结果</h3>
+        </div>
+        {error && (
+          <div className="error-message">
+            错误: {error}
+          </div>
+        )}
+        <ResultsTable results={results} loading={loading} />
+      </div>
     </div>
   );
 }
