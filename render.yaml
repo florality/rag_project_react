@@ -8,8 +8,15 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
+      - key: PORT
+        value: 8000  # 明确指定端口
 
   - type: static
     name: resume-screening-frontend
     buildCommand: "cd app/frontend_react && rm -rf node_modules package-lock.json && npm install && npm run build"
-    staticPublishPath: "build"  # 这是正确的配置
+    staticPublishPath: "build"
+    # 添加路由规则，将/api/*路由到后端服务
+    routes:
+      - type: rewrite
+        source: /api/(.*)
+        destination: /api/$1

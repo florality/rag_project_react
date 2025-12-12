@@ -17,20 +17,31 @@ function App() {
   const handleSubmit = async (jobData) => {
     setLoading(true);
     setError(null);
+    setResults([]); // 清空之前的结果
     
     try {
       console.log('开始获取评分结果...');
+      console.log('请求参数:', {
+        jobTitle: jobData.jobTitle,
+        requirements: requirements,
+        topN: jobData.topN
+      });
+      
       const data = await fetchScoreResults(
         jobData.jobTitle,
         requirements, // 使用独立的状态变量
         jobData.topN
       );
       
+      console.log(`成功获取到 ${data.length} 条结果`, data);
       setResults(data);
-      console.log(`成功获取到 ${data.length} 条结果`);
     } catch (err) {
       console.error('获取评分结果时出错:', err);
-      setError(err.message || '获取评分结果失败');
+      const errorMessage = err.message || '获取评分结果失败';
+      setError(errorMessage);
+      
+      // 显示更详细的错误信息给用户
+      alert(`筛选失败: ${errorMessage}\n请查看浏览器控制台了解详细信息。`);
     } finally {
       setLoading(false);
     }

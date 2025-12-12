@@ -34,17 +34,34 @@ export const fetchScoreResults = async (jobTitle, requirements, topN) => {
 
     // 构造完整的API URL
     const apiUrl = `${BACKEND_URL}/api/score`;
+    const fallbackUrl = `${BACKEND_URL}/score`; // 备用URL
 
     console.log(`发送请求到后端: ${apiUrl}`);
     console.log(`请求数据:`, payload);
 
-    // 发送POST请求到后端
-    const response = await axios.post(apiUrl, payload, {
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      timeout: 300000 // 5分钟超时
-    });
+    // 尝试发送POST请求到后端
+    let response;
+    try {
+      response = await axios.post(apiUrl, payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        timeout: 300000 // 5分钟超时
+      });
+    } catch (primaryError) {
+      console.log(`主URL请求失败，尝试备用URL: ${fallbackUrl}`);
+      try {
+        response = await axios.post(fallbackUrl, payload, {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          timeout: 300000 // 5分钟超时
+        });
+      } catch (fallbackError) {
+        // 如果两个URL都失败，抛出主错误
+        throw primaryError;
+      }
+    }
 
     console.log(`后端响应状态码: ${response.status}`);
 
@@ -67,9 +84,10 @@ export const fetchScoreResults = async (jobTitle, requirements, topN) => {
       throw new Error(`后端返回错误: ${response.status} - ${response.statusText}`);
     }
   } catch (error) {
+    console.error('API调用错误详情:', error);
     if (error.response) {
       // 服务器响应了错误状态码
-      throw new Error(`后端返回错误: ${error.response.status} - ${error.response.data}`);
+      throw new Error(`后端返回错误: ${error.response.status} - ${JSON.stringify(error.response.data)}`);
     } else if (error.request) {
       // 请求已发出但没有收到响应
       throw new Error('无法连接到后端服务器，请检查网络连接和后端服务是否运行');

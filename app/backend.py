@@ -69,19 +69,32 @@ def create_app() -> FastAPI:
     def health():
         return {"status": "正常"}  # 修改为中文
 
-    # 修改为同步端点，将路由改为 /api/score 以匹配前端的调用
+    # 修改为同时支持 /api/score 和 /score 路由
     @app.post("/api/score", response_model=ScoreResponse)
+    def score_api(req: ScoreRequest):
+        return score_impl(req)
+
+    @app.post("/score", response_model=ScoreResponse)
     def score(req: ScoreRequest):
+        return score_impl(req)
+
+    # 修改score_impl函数以增加更多日志
+    def score_impl(req: ScoreRequest):
+        print(f"[后端] 接收到评分请求: job_title={req.job_title}, top_n={req.top_n}")
         if not cfg.api_key:
+            print("[后端] 错误: 缺少API密钥")
             raise HTTPException(status_code=400, detail="缺少API密钥。")
         try:
+            print("[后端] 开始处理评分请求...")
             # 使用同步函数处理评分
             ranked = score_from_dataset(req.job_title, req.requirements, req.top_n, cfg)
+            print(f"[后端] 评分处理完成，返回 {len(ranked) if ranked else 0} 个结果")
         except Exception as exc:  # noqa: BLE001
+            print(f"[后端] 评分处理过程中发生错误: {exc}")
             raise HTTPException(status_code=500, detail=f"搜索/评分失败: {exc}") from exc
 
         items: List[ScoreItem] = []
-        for idx, result in enumerate(ranked):
+        for idx, result in enumerate(ranked or []):  # 添加None检查
             summary_score = result["report"]["ordered_scores"][0]["score"] if result["report"]["ordered_scores"] else 0
             raw_resume = result.get("plan", {}).get("normalized_resume", "")
             
@@ -102,6 +115,7 @@ def create_app() -> FastAPI:
                     raw_resume=raw_resume,
                 )
             )
+        print(f"[后端] 返回 {len(items)} 个评分项")
         return ScoreResponse(results=items)
 
     # 新增：挂载 Gradio 前端，确保路径正确
